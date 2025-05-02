@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, ParseBoolPipe, ParseIntPipe, Post, Query } from '@nestjs/common';
 
 @Controller('property')
 export class PropertyController {
@@ -8,8 +8,8 @@ export class PropertyController {
         return 'This action returns all property';
     }
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return `This action returns a ${id} property`;
+    findOne(@Param('id', ParseIntPipe) id, @Query('sort', ParseBoolPipe) sort) {
+        return `This action returns a ${id} property ${sort}`;
     }
     @Post()
     @HttpCode(201)
