@@ -14,6 +14,13 @@ import {
 } from '@nestjs/common';
 import { CreatePropertyDto } from './dto/createProperty.dto';
 import { ParseIdPipe } from './pipes/parseIdpipe';
+import { ZodValidationPipe } from './pipes/zodValidationPipe';
+import {
+  createPropertySchema,
+  CreatePropertyZodDto,
+} from './dto/createPropertyZod.dto';
+import { RequestHeader } from './pipes/request-header';
+import { HeadersDto } from './dto/headers.dto';
 
 @Controller('property')
 export class PropertyController {
@@ -26,23 +33,27 @@ export class PropertyController {
     return `This action returns a ${id} property ${sort}`;
   }
   @Post()
-  @UsePipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  )
+  //   @UsePipes(
+  //     new ValidationPipe({
+  //       whitelist: true,
+  //       forbidNonWhitelisted: true,
+  //     }),
+    // )
+  @UsePipes(new ZodValidationPipe(createPropertySchema))
   @HttpCode(201)
   create(
-    @Body() createPropertyDto: CreatePropertyDto,
-    @Body('name') name: string,
+    @Body() createPropertyDto: CreatePropertyZodDto,
+    // @Body('name') name: string,
   ) {
-    console.log(createPropertyDto);
-    return { ...createPropertyDto, name }; ///'This action adds a new property';
+    // console.log(createPropertyDto);
+    return { ...createPropertyDto }; ///'This action adds a new property';
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIdPipe) id) {
-    return `This action updates a #${id} property`;
+  update(
+    @Param('id', ParseIdPipe) id,
+    @RequestHeader(new ValidationPipe({ validateCustomDecorators: true })) headers: HeadersDto,
+  ) {
+    return `This action updates a #${id} property with headers: ${JSON.stringify(headers)}`;
   }
 }

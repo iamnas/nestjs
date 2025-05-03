@@ -1,11 +1,13 @@
-import { IsNumber, IsString, Length } from 'class-validator';
+import { IsInt, IsPositive, IsString, Length } from 'class-validator';
 
 export class CreatePropertyDto {
   @IsString()
-  @Length(2, 10, { message: 'Name is too short or too long' })
+  @Length(2, 10, { message: 'error on length' })
   name: string;
   @IsString()
   description: string;
-  @IsNumber()
+
+  @IsInt()
+  @IsPositive()
   price: number;
 }
