@@ -9,7 +9,7 @@ export class OrdersController {
     private ordersServiceClient: ClientProxy,
   ) {}
   @Post('create')
-  createOrder(@Body() order: { id: string; items: string[]; total: number }) {
+  createOrder(@Body() order: { id: number; productId: number; quantity: number }) {
     // console.log('Order Created', order);
     return this.ordersServiceClient.send('create_order', order);
   }
